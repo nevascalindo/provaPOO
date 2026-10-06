@@ -8,6 +8,7 @@ public class Robo {
     public int vitorias;
     public int derrotas;
     public int pontos;
+    public int combates;
 
     Robo(int codigo, String nome, int ataque, int defesa) {
         this.codigo = codigo;
@@ -19,6 +20,7 @@ public class Robo {
         this.vitorias = 0;
         this.derrotas = 0;
         this.pontos = 0;
+        this.combates = 0;
     }
 
     public void exibirStatus() {
@@ -110,4 +112,13 @@ public class Robo {
         this.energiaAtual += quantidade;
         this.pontos -= custo;
     }
+
+    public void registrarCombate() {
+    this.combates++;
+    }
+
+    public boolean podeExcluir() {
+    return this.combates == 0;
+    }
+
 }

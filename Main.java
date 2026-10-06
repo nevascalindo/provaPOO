@@ -20,6 +20,7 @@ public class Main {
             System.out.println("  3. Listar Robôs");
             System.out.println("  4. Porradaria");
             System.out.println("  5. Curar Robô");
+            System.out.println("  6. Excluir Robô");
             System.out.println("---------------------------------");
             System.out.println("Digite a operação: ");
 
@@ -181,6 +182,7 @@ public class Main {
 
                     Robo primeiro;
                     Robo segundo;
+                    
 
                     if (robo1.pontos < robo2.pontos) {
 
@@ -205,6 +207,9 @@ public class Main {
                             segundo = robo1;
                         }
                     }
+
+                    primeiro.registrarCombate();
+                    segundo.registrarCombate();
                     System.out.println();
                     System.out.println("Primeiro a atacar: " + primeiro.nome);
 
@@ -230,13 +235,11 @@ public class Main {
                                 "Dano causado: " + dano);
 
                         System.out.println(
-                                "Energia de " + segundo.nome +
-                                        ": " + segundo.energiaAtual);
+                                "Energia de " + segundo.nome +": " + segundo.energiaAtual);
 
                         if (segundo.estaDerrotado()) {
 
-                            System.out.println(
-                                    segundo.nome + " ficou sem energia!");
+                            System.out.println(segundo.nome + " ficou sem energia!");
 
                             break;
                         }
@@ -257,13 +260,11 @@ public class Main {
                                 "Dano causado: " + dano);
 
                         System.out.println(
-                                "Energia de " + primeiro.nome +
-                                        ": " + primeiro.energiaAtual);
+                                "Energia de " + primeiro.nome +": " + primeiro.energiaAtual);
 
                         if (primeiro.estaDerrotado()) {
 
-                            System.out.println(
-                                    primeiro.nome + " ficou sem energia!");
+                            System.out.println(primeiro.nome + " ficou sem energia!");
 
                             break;
                         }
@@ -391,6 +392,43 @@ public class Main {
                             System.out.println("Pontos restantes: " + roboEncontradoEnergia.pontos);
                             System.out.println("---------------------------------");
                         }
+                    }break;
+                case 6:
+
+                    System.out.println();
+                    System.out.println("=================================");
+                    System.out.println("       --EXCLUIR ROBÔ--");
+                    System.out.println("=================================");
+
+                    System.out.println("Digite o código do robô:");
+                    int codigoExcluir = s.nextInt();
+
+                    Robo roboExcluir = null;
+
+                    for (Robo r : robos) {
+                        if (r.codigo == codigoExcluir) {
+                            roboExcluir = r;
+                            break;
+                            }
+                        }
+
+                    if (roboExcluir == null) {
+                        System.out.println();
+                        System.out.println("---------------------------------");
+                        System.out.println("Robô não encontrado!");
+                        System.out.println("---------------------------------");
+                    } else if (roboExcluir.podeExcluir()) {
+                        robos.remove(roboExcluir);
+                        System.out.println();
+                        System.out.println("---------------------------------");
+                        System.out.println("Robô excluído com sucesso!");
+                        System.out.println("---------------------------------");
+                    } else {
+                        System.out.println();
+                        System.out.println("---------------------------------");
+                        System.out.println("Não é possível excluir!");
+                        System.out.println("O robô já participou de um combate.");
+                        System.out.println("---------------------------------");
                     }break;
             }
         } while (opt != 0);
