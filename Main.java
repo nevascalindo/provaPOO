@@ -3,7 +3,9 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
+
         Scanner s = new Scanner(System.in);
         ArrayList<Robo> robos = new ArrayList<>();
 
@@ -32,416 +34,378 @@ public class Main {
                     System.out.println("=================================");
                     System.out.println("       Programa Encerrado!");
                     System.out.println("=================================");
-
                     break;
-
                 case 1:
-                    System.out.println();
-                    System.out.println("=================================");
-                    System.out.println("       --CADASTRAR ROBÔ--");
-                    System.out.println("=================================");
-
-                    System.out.println("Digite o código do robô: ");
-                    int codigo = s.nextInt();
-
-                    if (codigo <= 0) {
-                        System.out.println("O código deve ser positivo!");
-                    } else {
-                        boolean codigoExiste = false;
-
-                        for (Robo r : robos) {
-                            if (r.codigo == codigo) {
-                                codigoExiste = true;
-                                break;
-                            }
-                        }
-                        if (codigoExiste) {
-                            System.out.println("Código já cadastrado!");
-                        } else {
-
-                            System.out.println("Digite o nome do robô: ");
-                            String nome = s.next();
-
-                            System.out.println("Digite o ataque: ");
-                            int ataque = s.nextInt();
-
-                            if (ataque < 10 || ataque > 30) {
-                                System.out.println("Ataque inválido! Deve estar entre 10 e 30.");
-                            } else {
-
-                                System.out.println("Digite a defesa: ");
-                                int defesa = s.nextInt();
-
-                                if (defesa < 0 || defesa > 20) {
-                                    System.out.println("Defesa inválida! Deve estar entre 0 e 20.");
-                                } else {
-
-                                    Robo robo = new Robo(
-                                            codigo,
-                                            nome,
-                                            ataque,
-                                            defesa);
-
-                                    robos.add(robo);
-
-                                    System.out.println("Robô cadastrado com sucesso!");
-                                }
-                            }
-                        }
-                    }
+                    cadastrarRobo(s, robos);
                     break;
-
                 case 2:
-
-                    System.out.println();
-                    System.out.println("=================================");
-                    System.out.println("       --CONSULTAR ROBÔ--");
-                    System.out.println("=================================");
-
-                    System.out.println("Digite o código do robô: ");
-                    int codigoRobo = s.nextInt();
-
-                    Robo roboEncontrado = null;
-
-                    for (Robo r : robos) {
-                        if (r.codigo == codigoRobo) {
-                            roboEncontrado = r;
-                            break;
-                        }
-
-                    }
-                    if (roboEncontrado != null) {
-                        roboEncontrado.exibirStatus();
-                    } else {
-                        System.out.println();
-                        System.out.println("---------------------------------");
-                        System.out.println("     Robô não encontrado :(");
-                        System.out.println("---------------------------------");
-                    }
+                    consultarRobo(s, robos);
                     break;
-
                 case 3:
-
-                    System.out.println();
-                    System.out.println("=================================");
-                    System.out.println("        --LISTA DE ROBÔS--");
-                    System.out.println("=================================");
-
-                    for (Robo r : robos) {
-                        r.exibirRobos();
-                        System.out.println("---------------------------------");
-                    }
+                    listarRobos(robos);
                     break;
-
                 case 4:
-
-                    System.out.println();
-                    System.out.println("=================================");
-                    System.out.println("       --BATALHA DE ROBÔS--");
-                    System.out.println("=================================");
-
-                    System.out.println("Digite o código do primeiro robô: ");
-                    int codigo1 = s.nextInt();
-
-                    System.out.println("Digite o código do segundo robô: ");
-                    int codigo2 = s.nextInt();
-
-                    Robo robo1 = null;
-                    Robo robo2 = null;
-
-                    for (Robo r : robos) {
-                        if (r.codigo == codigo1) {
-                            robo1 = r;
-                        }
-                        if (r.codigo == codigo2) {
-                            robo2 = r;
-                        }
-                    }
-
-                    if (codigo1 == codigo2) {
-                        System.out.println("Os robôs devem ser diferentes!");
-                        break;
-                    }
-
-                    if (robo1 == null || robo2 == null) {
-                        System.out.println("Um ou ambos os robôs não foram encontrados!");
-                        break;
-                    }
-
-                    if (robo1.energiaAtual < 30 || robo2.energiaAtual < 30) {
-                        System.out.println("Os dois robôs precisam possuir pelo menos 30 de energia!");
-                        break;
-                    }
-
-                    System.out.println();
-                    System.out.println("=================================");
-                    System.out.println("        HORA DA PORRADA!");
-                    System.out.println("=================================");
-
-                    System.out.println(robo1.nome + " VS " + robo2.nome);
-
-                    Robo primeiro;
-                    Robo segundo;
-                    
-
-                    if (robo1.pontos < robo2.pontos) {
-
-                        primeiro = robo1;
-                        segundo = robo2;
-
-                    } else if (robo2.pontos < robo1.pontos) {
-
-                        primeiro = robo2;
-                        segundo = robo1;
-
-                    } else {
-
-                        if (robo1.codigo < robo2.codigo) {
-
-                            primeiro = robo1;
-                            segundo = robo2;
-
-                        } else {
-
-                            primeiro = robo2;
-                            segundo = robo1;
-                        }
-                    }
-
-                    primeiro.registrarCombate();
-                    segundo.registrarCombate();
-                    System.out.println();
-                    System.out.println("Primeiro a atacar: " + primeiro.nome);
-
-                    for (int rodada = 1; rodada <= 5; rodada++) {
-
-                        System.out.println();
-                        System.out.println("---------------------------------");
-                        System.out.println("            RODADA " + rodada);
-                        System.out.println("---------------------------------");
-
-                        int dano = primeiro.calcularDano(segundo);
-
-                        if (rodada % 2 == 0) {
-                            dano += 5;
-                        }
-
-                        segundo.receberDano(dano);
-
-                        System.out.println(
-                                primeiro.nome + " atacou " + segundo.nome);
-
-                        System.out.println(
-                                "Dano causado: " + dano);
-
-                        System.out.println(
-                                "Energia de " + segundo.nome +": " + segundo.energiaAtual);
-
-                        if (segundo.estaDerrotado()) {
-
-                            System.out.println(segundo.nome + " ficou sem energia!");
-
-                            break;
-                        }
-
-                        dano = segundo.calcularDano(primeiro);
-
-                        if (rodada % 2 == 0) {
-                            dano += 5;
-                        }
-
-                        primeiro.receberDano(dano);
-
-                        System.out.println();
-                        System.out.println(
-                                segundo.nome + " atacou " + primeiro.nome);
-
-                        System.out.println(
-                                "Dano causado: " + dano);
-
-                        System.out.println(
-                                "Energia de " + primeiro.nome +": " + primeiro.energiaAtual);
-
-                        if (primeiro.estaDerrotado()) {
-
-                            System.out.println(primeiro.nome + " ficou sem energia!");
-
-                            break;
-                        }
-                    }
-
-                    System.out.println();
-                    System.out.println("=================================");
-                    System.out.println("          RESULTADO FINAL");
-                    System.out.println("=================================");
-
-                    System.out.println(
-                            robo1.nome + " - Energia: " +
-                                    robo1.energiaAtual);
-
-                    System.out.println(
-                            robo2.nome + " - Energia: " +
-                                    robo2.energiaAtual);
-
-                    if (robo1.energiaAtual == 0) {
-
-                        robo2.registrarVitoria();
-                        robo1.registrarDerrota();
-
-                        System.out.println();
-                        System.out.println("Vencedor: " + robo2.nome);
-
-                    } else if (robo2.energiaAtual == 0) {
-
-                        robo1.registrarVitoria();
-                        robo2.registrarDerrota();
-
-                        System.out.println();
-                        System.out.println("Vencedor: " + robo1.nome);
-
-                    } else if (robo1.energiaAtual > robo2.energiaAtual) {
-
-                        robo1.registrarVitoria();
-                        robo2.registrarDerrota();
-
-                        System.out.println();
-                        System.out.println("Vencedor: " + robo1.nome);
-
-                    } else if (robo2.energiaAtual > robo1.energiaAtual) {
-
-                        robo2.registrarVitoria();
-                        robo1.registrarDerrota();
-
-                        System.out.println();
-                        System.out.println("Vencedor: " + robo2.nome);
-
-                    } else {
-
-                        robo1.registrarEmpate();
-                        robo2.registrarEmpate();
-
-                        System.out.println();
-                        System.out.println("EMPATE!");
-                    }
+                    realizarCombate(s, robos);
                     break;
-
                 case 5:
-                    System.out.println();
-                    System.out.println("=================================");
-                    System.out.println("       --RECUPERAR ENERGIA--");
-                    System.out.println("=================================");
-
-                    System.out.println("Digite o código do robô: ");
-                    int codigoRoboEnergia = s.nextInt();
-
-                    Robo roboEncontradoEnergia = null;
-
-                    for (Robo r : robos) {
-                        if (r.codigo == codigoRoboEnergia) {
-                            roboEncontradoEnergia = r;
-                            break;
-                        }
-                    }
-
-                    if (roboEncontradoEnergia == null) {
-
-                        System.out.println();
-                        System.out.println("---------------------------------");
-                        System.out.println("     Robô não encontrado :(");
-                        System.out.println("---------------------------------");
-
-                        break;
-                    }
-
-                    System.out.println("Digite a quantidade de energia desejada: ");
-                    int quantidade = s.nextInt();
-
-                    if (quantidade <= 0) {
-
-                        System.out.println();
-                        System.out.println("A quantidade deve ser positiva!");
-
-                    } else if (quantidade % 10 != 0) {
-
-                        System.out.println();
-                        System.out.println("A quantidade deve ser múltipla de 10!");
-
-                    } else {
-
-                        int custo = quantidade / 10;
-
-                        if (roboEncontradoEnergia.pontos < custo) {
-
-                            System.out.println();
-                            System.out.println("Pontos insuficientes!");
-                            System.out.println("Custo: " + custo);
-                            System.out.println("Pontos disponíveis: " + roboEncontradoEnergia.pontos);
-
-                        } else if (roboEncontradoEnergia.energiaAtual + quantidade > 100) {
-
-                            System.out.println();
-                            System.out.println("A energia não pode ultrapassar 100!");
-                        } else {
-
-                            roboEncontradoEnergia.recuperarEnergia(quantidade);
-
-                            System.out.println();
-                            System.out.println("---------------------------------");
-                            System.out.println("Energia recuperada com sucesso!");
-                            System.out.println("Energia atual: " + roboEncontradoEnergia.energiaAtual);
-                            System.out.println("Pontos restantes: " + roboEncontradoEnergia.pontos);
-                            System.out.println("---------------------------------");
-                        }
-                    }break;
+                    recuperarRobo(s, robos);
+                    break;
                 case 6:
-
-                    System.out.println();
-                    System.out.println("=================================");
-                    System.out.println("       --EXCLUIR ROBÔ--");
-                    System.out.println("=================================");
-
-                    System.out.println("Digite o código do robô:");
-                    int codigoExcluir = s.nextInt();
-
-                    Robo roboExcluir = null;
-
-                    for (Robo r : robos) {
-                        if (r.codigo == codigoExcluir) {
-                            roboExcluir = r;
-                            break;
-                            }
-                        }
-
-                    if (roboExcluir == null) {
-                        System.out.println();
-                        System.out.println("---------------------------------");
-                        System.out.println("Robô não encontrado!");
-                        System.out.println("---------------------------------");
-                    } else if (roboExcluir.podeExcluir()) {
-                        robos.remove(roboExcluir);
-                        System.out.println();
-                        System.out.println("---------------------------------");
-                        System.out.println("Robô excluído com sucesso!");
-                        System.out.println("---------------------------------");
-                    } else {
-                        System.out.println();
-                        System.out.println("---------------------------------");
-                        System.out.println("Não é possível excluir!");
-                        System.out.println("O robô já participou de um combate.");
-                        System.out.println("---------------------------------");
-                    }break;
+                    excluirRobo(s, robos);
+                    break;
+                default:
+                    System.out.println("Operação inexistente!");
+                    break;
             }
+
         } while (opt != 0);
+
         s.close();
     }
 
+    private static void cadastrarRobo(Scanner s, ArrayList<Robo> robos) {
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println("       --CADASTRAR ROBÔ--");
+        System.out.println("=================================");
+
+        System.out.println("Digite o código do robô:");
+        int codigo = s.nextInt();
+
+        if (buscarRobo(robos, codigo) != null) {
+            System.out.println("Código já cadastrado!");
+            return;
+        }
+
+        System.out.println("Digite o nome do robô:");
+        s.nextLine();
+        String nome = s.nextLine();
+
+        System.out.println("Digite o ataque:");
+        int ataque = s.nextInt();
+
+        System.out.println("Digite a defesa:");
+        int defesa = s.nextInt();
+
+        System.out.println(); 
+        System.out.println("Selecione o tipo de robô:"); //MENU PARA ESCOLHER O TIPO DO ROBÔ!
+        System.out.println("1 - Ofensivo");
+        System.out.println("2 - Defensivo");
+        System.out.println("3 - Equilibrado");
+
+        int tipo;
+        do {
+            System.out.println("Digite o tipo:");
+            tipo = buscarOperacao(s);
+
+            if (tipo < 1 || tipo > 3) {
+                System.out.println("Tipo inválido! Escolha entre 1 e 3.");
+            }
+        } while (tipo < 1 || tipo > 3);
+
+        try {
+            Robo robo;
+
+            switch (tipo) { // AQUI ELE CRIA O ROBÔ COM BASE NA TUA ESCOLHA, E TUDO ARMAZENA NO MESMO ARRAY, SEM NECESSIDADE DE CRIAR UM NOVO!
+                case 1:
+                    robo = new RoboOfensivo(codigo, nome, ataque, defesa);
+                    break;
+                case 2:
+                    robo = new RoboDefensivo(codigo, nome, ataque, defesa);
+                    break;
+                default:
+                    robo = new RoboEquilibrado(codigo, nome, ataque, defesa);
+                    break;
+            }
+
+            robos.add(robo);
+            System.out.println("Robô cadastrado com sucesso!");
+            System.out.println("Tipo: " + robo.getTipo());
+
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void consultarRobo(Scanner s, ArrayList<Robo> robos) {
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println("       --CONSULTAR ROBÔ--");
+        System.out.println("=================================");
+
+        System.out.println("Digite o código do robô:");
+        int codigo = s.nextInt();
+
+        Robo roboEncontrado = buscarRobo(robos, codigo);
+
+        if (roboEncontrado != null) {
+            roboEncontrado.exibirStatus();
+        } else {
+            System.out.println();
+            System.out.println("---------------------------------");
+            System.out.println("     Robô não encontrado :(");
+            System.out.println("---------------------------------");
+        }
+    }
+
+    private static void listarRobos(ArrayList<Robo> robos) {
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println("        --LISTA DE ROBÔS--");
+        System.out.println("=================================");
+
+        if (robos.isEmpty()) {
+            System.out.println("Nenhum robô cadastrado.");
+            return;
+        }
+
+        for (Robo r : robos) {
+            r.exibirRobos();
+            System.out.println("---------------------------------");
+        }
+    }
+
+    private static void realizarCombate(Scanner s, ArrayList<Robo> robos) {
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println("       --BATALHA DE ROBÔS--");
+        System.out.println("=================================");
+
+        System.out.println("Digite o código do primeiro robô:");
+        int codigo1 = s.nextInt();
+
+        System.out.println("Digite o código do segundo robô:");
+        int codigo2 = s.nextInt();
+
+        if (codigo1 == codigo2) {
+            System.out.println("Os robôs devem ser diferentes!");
+            return;
+        }
+
+        Robo robo1 = buscarRobo(robos, codigo1);
+        Robo robo2 = buscarRobo(robos, codigo2);
+
+        if (robo1 == null || robo2 == null) {
+            System.out.println("Um ou ambos os robôs não foram encontrados!");
+            return;
+        }
+
+        if (robo1.getEnergiaAtual() < 30 || robo2.getEnergiaAtual() < 30) {
+            System.out.println("Os dois robôs precisam ter pelo menos 30 de energia!");
+            return;
+        }
+
+        robo1.registrarCombate();
+        robo2.registrarCombate();
+
+        Robo primeiro;
+        Robo segundo;
+
+        if (robo1.getPontos() < robo2.getPontos()) {
+            primeiro = robo1;
+            segundo = robo2;
+        } else if (robo2.getPontos() < robo1.getPontos()) {
+            primeiro = robo2;
+            segundo = robo1;
+        } else if (robo1.getCodigo() < robo2.getCodigo()) {
+            primeiro = robo1;
+            segundo = robo2;
+        } else {
+            primeiro = robo2;
+            segundo = robo1;
+        }
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println(primeiro.getNome() + " VS " + segundo.getNome());
+        System.out.println("Primeiro a atacar: " + primeiro.getNome());
+        System.out.println("=================================");
+
+        for (int rodada = 1; rodada <= 5; rodada++) {
+
+            System.out.println();
+            System.out.println("RODADA " + rodada);
+
+            atacar(primeiro, segundo, rodada);
+
+            if (segundo.estaDerrotado()) {
+                System.out.println(segundo.getNome() + " ficou sem energia!");
+                break;
+            }
+
+            atacar(segundo, primeiro, rodada);
+
+            if (primeiro.estaDerrotado()) {
+                System.out.println(primeiro.getNome() + " ficou sem energia!");
+                break;
+            }
+        }
+
+        mostrarResultado(robo1, robo2);
+    }
+
+    private static void atacar(Robo atacante, Robo defensor, int rodada) { // CALCULAR O ATAQUE
+
+        int dano = atacante.calcularAtaque();
+
+        dano -= defensor.getDefesa();
+
+        if (dano < 5) {
+            dano = 5;
+        }
+
+        if (rodada % 2 == 0) {
+            dano += 5;
+        }
+
+        dano = defensor.reduzirDanoRecebido(dano);
+
+        defensor.receberDano(dano);
+
+        System.out.println(atacante.getNome() + " atacou " + defensor.getNome());
+        System.out.println("Dano causado: " + dano);
+        System.out.println("Energia de " + defensor.getNome() + ": "
+                + defensor.getEnergiaAtual());
+    }
+
+    private static void mostrarResultado(Robo robo1, Robo robo2) {
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println("RESULTADO FINAL");
+        System.out.println("=================================");
+
+        System.out.println(robo1.getNome() + " - Energia: "
+                + robo1.getEnergiaAtual());
+        System.out.println(robo2.getNome() + " - Energia: "
+                + robo2.getEnergiaAtual());
+
+        if (robo1.estaDerrotado()) {
+            robo2.registrarVitoria();
+            robo1.registrarDerrota();
+            System.out.println("Vencedor: " + robo2.getNome());
+
+        } else if (robo2.estaDerrotado()) {
+            robo1.registrarVitoria();
+            robo2.registrarDerrota();
+            System.out.println("Vencedor: " + robo1.getNome());
+
+        } else if (robo1.getEnergiaAtual() > robo2.getEnergiaAtual()) {
+            robo1.registrarVitoria();
+            robo2.registrarDerrota();
+            System.out.println("Vencedor: " + robo1.getNome());
+
+        } else if (robo2.getEnergiaAtual() > robo1.getEnergiaAtual()) {
+            robo2.registrarVitoria();
+            robo1.registrarDerrota();
+            System.out.println("Vencedor: " + robo2.getNome());
+
+        } else {
+            robo1.registrarEmpate();
+            robo2.registrarEmpate();
+            System.out.println("EMPATE!");
+        }
+    }
+
+    private static void recuperarRobo(Scanner s, ArrayList<Robo> robos) {
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println("       --RECUPERAR ENERGIA--");
+        System.out.println("=================================");
+
+        System.out.println("Digite o código do robô:");
+        int codigo = s.nextInt();
+
+        Robo robo = buscarRobo(robos, codigo);
+
+        if (robo == null) {
+            System.out.println();
+            System.out.println("---------------------------------");
+            System.out.println("     Robô não encontrado :(");
+            System.out.println("---------------------------------");
+            return;
+        }
+
+        System.out.println("Digite a quantidade de energia desejada:");
+        int quantidade = s.nextInt();
+
+        String erro = robo.validarRecuperacao(quantidade);
+
+        if (erro != null) {
+            System.out.println();
+            System.out.println(erro);
+            return;
+        }
+
+        if (robo.recuperarEnergia(quantidade)) {
+            System.out.println();
+            System.out.println("---------------------------------");
+            System.out.println("Energia recuperada com sucesso!");
+            System.out.println("Energia atual: " + robo.getEnergiaAtual());
+            System.out.println("Pontos restantes: " + robo.getPontos());
+            System.out.println("---------------------------------");
+        }
+    }
+
+    private static void excluirRobo(Scanner s, ArrayList<Robo> robos) {
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println("       --EXCLUIR ROBÔ--");
+        System.out.println("=================================");
+
+        System.out.println("Digite o código do robô:");
+        int codigo = s.nextInt();
+
+        Robo roboExcluir = buscarRobo(robos, codigo);
+
+        if (roboExcluir == null) {
+            System.out.println();
+            System.out.println("---------------------------------");
+            System.out.println("Robô não encontrado!");
+            System.out.println("---------------------------------");
+
+        } else if (roboExcluir.podeExcluir()) {
+            robos.remove(roboExcluir);
+            System.out.println();
+            System.out.println("---------------------------------");
+            System.out.println("Robô excluído com sucesso!");
+            System.out.println("---------------------------------");
+
+        } else {
+            System.out.println();
+            System.out.println("---------------------------------");
+            System.out.println("Não é possível excluir!");
+            System.out.println("O robô já participou de um combate.");
+            System.out.println("---------------------------------");
+        }
+    }
+
+    private static Robo buscarRobo(ArrayList<Robo> robos, int codigo) {
+
+        for (Robo r : robos) {
+            if (r.getCodigo() == codigo) {
+                return r;
+            }
+        }
+        return null;
+    }
+
     public static int buscarOperacao(Scanner s) {
+
         int opt = -1;
+
         do {
             try {
                 opt = s.nextInt();
             } catch (InputMismatchException e) {
                 s.next();
+
                 System.out.println();
                 System.out.println("=================================");
                 System.out.println("         OPERAÇÃO INVÁLIDA");
@@ -450,6 +414,7 @@ public class Main {
 
                 opt = -1;
             }
+
         } while (opt < 0);
         return opt;
     }

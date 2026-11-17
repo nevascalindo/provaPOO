@@ -1,16 +1,33 @@
-public class Robo {
+public abstract class Robo {
+    // AQUI O ENCAPSULAMENTO COM PRIVATE E EMBAIXO OS GETTERS!
+    private int codigo;
+    private String nome;
+    private int ataque;
+    private int defesa;
+    private int energiaAtual;
+    private int vitorias;
+    private int derrotas;
+    private int pontos;
+    private int combates;
 
-    public int codigo;
-    public String nome;
-    public int ataque;
-    public int defesa;
-    public int energiaAtual;
-    public int vitorias;
-    public int derrotas;
-    public int pontos;
-    public int combates;
+    protected Robo(int codigo, String nome, int ataque, int defesa) {
+        
+        if (codigo <= 0) {
+            throw new IllegalArgumentException("O código deve ser positivo!");
+        }
 
-    Robo(int codigo, String nome, int ataque, int defesa) {
+        if (nome == null || nome.isEmpty()) {
+            throw new IllegalArgumentException("O nome não pode ficar vazio!");
+        }
+
+        if (ataque < 10 || ataque > 30) {
+            throw new IllegalArgumentException("Ataque inválido! Deve ser entre 10 e 30.");
+        }
+
+        if (defesa < 0 || defesa > 20) {
+            throw new IllegalArgumentException("Defesa inválida! Deve ser entre 0 e 20.");
+        }
+
         this.codigo = codigo;
         this.nome = nome;
         this.ataque = ataque;
@@ -23,102 +40,145 @@ public class Robo {
         this.combates = 0;
     }
 
+    public int getCodigo() {
+        return codigo;
+    }
+    public String getNome() {
+        return nome;
+    }
+    public int getAtaque() {
+        return ataque;
+    }
+    public int getDefesa() {
+        return defesa;
+    }
+    public int getEnergiaAtual() {
+        return energiaAtual;
+    }
+    public int getVitorias() {
+        return vitorias;
+    }
+    public int getDerrotas() {
+        return derrotas;
+    }
+    public int getPontos() {
+        return pontos;
+    }
+    public int getCombates() {
+        return combates;
+    }
+
+    public abstract String getTipo();
+
+    public int calcularAtaque() {
+        return ataque;
+    }
+
+    public int reduzirDanoRecebido(int dano) {
+        return dano;
+    }
+
+    public void receberDano(int dano) {
+        if(dano <= 0){
+            return;
+        }
+
+        energiaAtual -= dano;
+
+        if(energiaAtual < 0) {
+            energiaAtual = 0;
+        }
+    }
+
+    public boolean estaDerrotado() {
+        return energiaAtual == 0;
+    }
+
+    public void registrarVitoria() {
+        vitorias++;
+        pontos += 3;
+    }
+
+    public void registrarDerrota() {
+        derrotas++;
+    }
+
+    public void registrarEmpate() {
+        pontos++;
+    }
+
+    public String validarRecuperacao(int quantidade) {
+        
+        if(quantidade <= 0) {
+            return "A quantidade deve ser positiva!";
+        }
+
+        if(quantidade % 10 != 0) {
+            return "A quantidade deve ser múltipla de 10!";
+        }
+
+        int custo = quantidade / 10;
+
+        if(pontos < custo) {
+            return "Pontos inseficientes! Custo: " +custo + " | Pontos disponíveis: " + pontos;
+        }
+
+        if(energiaAtual + quantidade > 100) {
+            return "A energia não pode ultrapassar de 100!";
+        }
+
+        return null;
+    }
+
+    public boolean recuperarEnergia(int quantidade) {
+        
+        if (validarRecuperacao(quantidade) != null){
+            return false;
+        }
+
+        int custo = quantidade / 10;
+
+        energiaAtual += quantidade;
+        pontos -= custo;
+
+        return true;
+    }
+
+    public void registrarCombate() {
+        combates++;
+    }
+
+    public boolean podeExcluir() {
+        return combates == 0;
+    }
+
     public void exibirStatus() {
         System.out.println();
         System.out.println("---------------------------------");
-        System.out.println("Código: " + this.codigo);
-        System.out.println("Nome: " + this.nome);
-        System.out.println("Ataque: " + this.ataque);
-        System.out.println("Defesa: " + this.defesa);
-        System.out.println("Energia atual: " + this.energiaAtual);
-        System.out.println("Vitórias: " + this.vitorias);
-        System.out.println("Derrotas: " + this.derrotas);
-        System.out.println("Pontos: " + this.pontos);
+        System.out.println("Código: " + codigo);
+        System.out.println("Nome: " + nome);
+        System.out.println("Tipo: " + getTipo());
+        System.out.println("Ataque: " + ataque);
+        System.out.println("Defesa: " + defesa);
+        System.out.println("Energia atual: " + energiaAtual);
+        System.out.println("Vitórias: " + vitorias);
+        System.out.println("Derrotas: " + derrotas);
+        System.out.println("Pontos: " + pontos);
+        System.out.println("Combates: " + combates);
         System.out.println("---------------------------------");
     }
 
     public void exibirRobos() {
-        System.out.println("Código: " + this.codigo);
-        System.out.println("Nome: " + this.nome);
-        System.out.println("Ataque:" + this.ataque);
-        System.out.println("Defesa:" + this.defesa);
+        System.out.println("Código: " + codigo);
+        System.out.println("Nome: " + nome);
+        System.out.println("Tipo: " + getTipo());
+        System.out.println("Ataque:" + ataque);
+        System.out.println("Defesa:" + defesa);
 
-        if (this.energiaAtual < 30) {
+        if (energiaAtual < 30) {
             System.out.println("Situação: Em Recuperação");
         } else {
             System.out.println("Situação: Disponível");
         }
     }
-
-    public int calcularDano(Robo adversario) {
-
-        int dano = this.ataque - adversario.defesa;
-        if (dano < 5) {
-            dano = 5;
-        }
-        return dano;
-    }
-
-    public void receberDano(int dano) {
-
-        this.energiaAtual -= dano;
-
-        if (this.energiaAtual < 0) {
-            this.energiaAtual = 0;
-        }
-    }
-
-    public boolean estaDerrotado() {
-        return this.energiaAtual == 0;
-    }
-
-    public void registrarVitoria() {
-        this.vitorias++;
-        this.pontos += 3;
-    }
-
-    public void registrarDerrota() {
-        this.derrotas++;
-    }
-
-    public void registrarEmpate() {
-        this.pontos++;
-    }
-
-    public boolean podeRecuperar(int quantidade) {
-        if (quantidade <= 0) {
-            return false;
-        }
-        if (quantidade % 10 != 0) {
-            return false;
-        }
-
-        int custo = quantidade / 10;
-
-        if (this.pontos < custo) {
-            return false;
-        }
-        if (this.energiaAtual + quantidade > 100) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public void recuperarEnergia(int quantidade) {
-
-        int custo = quantidade / 10;
-
-        this.energiaAtual += quantidade;
-        this.pontos -= custo;
-    }
-
-    public void registrarCombate() {
-    this.combates++;
-    }
-
-    public boolean podeExcluir() {
-    return this.combates == 0;
-    }
-
 }
